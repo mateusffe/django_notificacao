@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form name="form" id="form" action="{% if db %}/alterarentidade/{{db.id}}/{%else%}/criaentidade/{%endif%}" method="POST">
+        {% csrf_token %}
+        <div class="form-group mt-4">Razão Social: {{form.razao_social}}</div>
+        <div class="form-group mt-4">Nome Fantasia: {{form.nome_fantasia}}</div>
+        <div class="form-group mt-4">Endereço: {{form.endereco}}</div>
+        <div class="form-group mt-4">CNPJ: {{form.cnpj}}</div>
+        <div class="form-group mt-4">CPF: {{form.cpf}}</div>
+        <div class="form-group mt-4">Carteira Profissional: {{form.cp}}</div>
+        <div class="form-group mt-4">CNAE: {{form.cnae}}</div>
+    
+        <input type="submit" class="btn btn-success" value="Salvar">
+    </form>
+</body>
+</html>

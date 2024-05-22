@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="col-8 m-auto pt-2 text-center">
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome Entidade</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for dbs in db %}
+                    <tr>
+                        <th scope="row">{{dbs.id}}</th>
+                        <td>{{dbs.razao_social}}</td>
+                       
+                        <td>
+                            <a href="/visualizarentidade/{{dbs.id}}/" class="btn btn-dark">Visualizar</a>
+                            <a href="/editarentidade/{{dbs.id}}/" class="btn btn-primary">Editar</a>
+                            <a href="deletarentidade/{{dbs.id}}/" class="btn btn-danger btnDel">Deletar</a>
+                            
+                        </td>
+                    </tr>
+                {% endfor %}
+                <div class="pagination">
+                    {% if db.has_previous %}
+                        <a href="?page={{db.previous_page_number}}"> < </a>
+                    {% endif %}
+                    {{db.number}}
+                    {% if db.has_next %}
+                        <a href="?page={{db.next_page_number}}"> > </a>
+                    {% endif %}
+                </div>
+            </tbody>
+          </table>
+    </div>
+</body>
+</html>
