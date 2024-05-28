@@ -1,13 +1,25 @@
 from django.shortcuts import render, redirect
 from .models import Entidade
-from .forms import EntidadeForm
+from django.contrib import messages
+from .forms import EntidadeForm, UserEntidade
 from django.core.paginator import Paginator
-
+from django.contrib.auth import login, authenticate, logout
 # Create your views here.
 
 
 def index(request):
-    return render(request, 'index.html')
+    if str(request.user) == 'AnonymousUser':
+        teste = 'Usuário não logado'
+    else:
+        teste = 'Usuário Logado'
+
+    context = { 
+        'logado':teste
+    }
+    return render(request, 'index.html', context)
+
+def indexcomum(request):
+    return render(request, 'indexcomum.html')
 
 
 #INICIO CODIFICAÇÃO PARA ENTIDADE
@@ -38,6 +50,7 @@ def alterarentidade(request, pk):
         form.save()
         return redirect('buscaempresa')
 
+
 def buscaempresa(request):
     dados = {}
     all =  Entidade.objects.all()
@@ -62,6 +75,18 @@ def visualizarentidade(request, pk):
 
 ##COMECO CODIGO USUARIO ENTIDADE
 
+def userent(request):
+    data = {}
+    data['f'] = UserEntidade()
+    return render(request, 'formcadastrousuario.html', data)
 
+def criaruserent(request):
+    form= UserEntidade(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('index')
 
+def sair(request):
+    logout(request)
+    return redirect('index')      
 ##FIM CODIGO USUARIO ENTIDADE
