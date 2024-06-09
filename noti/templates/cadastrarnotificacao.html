@@ -6,9 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <form name="form" id="form" action="/" method="POST">
+    <form name="form" id="form" action="/salvarnotificacao" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ f.as_p }}
         <input type="submit" class="btn btn-success" value="Salvar">
     </form>
 </body>

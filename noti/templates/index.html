@@ -7,9 +7,14 @@
 </head>
 <body>
     <a>Página de Fiscal</a>
-    <p>{{logado}}</p>
-    <a href="/formentidade">Cadastrar Entidade</a>
+    <a href="/cadastrarempresa">Cadastrar Entidade</a>
+    <a href="/buscaempresa">Buscar Empresa</a>
+    <a href="/formcadastro">Cadastrar Pessoa</a>
 
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Log Out</button>
+    </form>
     
 </body>
 </html>

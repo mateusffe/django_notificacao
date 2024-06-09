@@ -1,8 +1,10 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Entidade, Notificacao, usuarioEntidade
+from .models import Entidade, Notificacao, usuarioEntidade, Parecer
 from django.contrib.auth.models import User
 
+class buscaempresafilter(forms.Form):
+    nome = forms.CharField(required=False)
 
 class EntidadeForm(ModelForm):
      class Meta:
@@ -69,4 +71,22 @@ class UserEntidade(ModelForm):
         return user
 
 
-    
+class NotificacaoForm(ModelForm):
+    class Meta:
+        model = Notificacao
+        fields = [
+            'codigo_verificador',
+            'notif',
+            'data',
+            'motivo',
+            'observacao',
+            'regularidade',
+            'prazo',
+            'fiscal',
+            'entidade'
+        ]
+
+class ParecerForm(ModelForm):
+    class Meta:
+        model = Parecer
+        fields = ['parecer', 'data_parecer', 'fiscal', 'notificacao']

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="col-8 m-auto pt-2 text-center">
+        <form name="form" id="form" action="{% url 'buscanotificacao' %}" method="GET">
+            {% csrf_token %}
+            {{ form.as_p }} 
+            <input type="submit" class="btn btn-success" value="Buscar">
+        </form>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome Entidade</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+                {% for dbs in db %}
+                    <tr>
+                        <th scope="row">{{dbs.notif}}</th>
+                        <td>{{dbs.entidade}}</td>
+                        <td>{{dbs.regularidade}}</td>
+                       
+                        <td>
+                            <a href="/visualizarnotificacao/{{dbs.codigo_verificador}}/" class="btn btn-dark">Visualizar</a>
+                            <a href="/editarentidade/{{dbs.id}}/" class="btn btn-primary">Editar</a>
+                            {% if dbs.regularidade == False %}
+                             <a href="deletarentidade/{{dbs.id}}/" class="btn btn-danger btnDel">Regularizar</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                <div class="pagination">
+                    {% if db.has_previous %}
+                        <a href="?page={{db.previous_page_number}}"> < </a>
+                    {% endif %}
+                    {{db.number}}
+                    {% if db.has_next %}
+                        <a href="?page={{db.next_page_number}}"> > </a>
+                    {% endif %}
+                </div>
+            </tbody>
+          </table>
+    </div>
+</body>
+</html>

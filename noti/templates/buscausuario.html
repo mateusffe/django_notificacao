@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <form name="form" id="form" action="{% url 'buscaempresa' %}" method="GET">
+    <form name="form" id="form" action="{% url 'buscausuario' %}" method="GET">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" class="btn btn-success" value="Buscar">
@@ -25,8 +25,14 @@
             <tbody id="empresalist">
                 {% for dbs in db %}
                     <tr>
-                        <th scope="row">{{ dbs.id }}</th>
-                        <td>{{ dbs.razao_social }}</td>
+                        <th scope="row">{{ dbs.user}}</th>
+                        <td>{{ dbs.escolha }}</td>
+                        {% if dbs.liberado == False %}
+                            <td>Não Liberado</td>
+                        {%else%}
+                            <td>Liberado</td>
+                        {%endif%}
+                        
                         <td>
                             <a href="/visualizarentidade/{{ dbs.id }}/" class="btn btn-dark">Visualizar</a>
                             <a href="/editarentidade/{{ dbs.id }}/" class="btn btn-primary">Editar</a>

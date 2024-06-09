@@ -9,10 +9,10 @@ from django.contrib.auth.models import User
 class usuarioEntidade(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     liberado = models.BooleanField(default=False)
-    ESCOLHA_TIPO = (        ('A', 'autonomo'),
-        ('E', 'empresa')
+    ESCOLHA_TIPO = (        ('Autonomo', 'autonomo'),
+        ('Empresa', 'empresa')
     )
-    escolha = models.CharField(max_length=3, choices=ESCOLHA_TIPO, default="A")
+    escolha = models.CharField(max_length=10, choices=ESCOLHA_TIPO, default="A")
 
   
 class Entidade(models.Model):
@@ -36,21 +36,25 @@ class Fiscal(models.Model):
 class Notificacao(models.Model):
     def gerar_codigo_verificador():
         return random.randint(10000000, 99999999)
-    codigo_verificador = models.PositiveIntegerField(primary_key=True, unique=True, default=gerar_codigo_verificador())
+    
+    codigo_verificador = models.PositiveIntegerField(primary_key=True, unique=True, default=gerar_codigo_verificador)
     notif = models.PositiveIntegerField(default=None)
     data = models.DateTimeField(default=None)
+    
     ESCOLHA_MOTIVO = (
         ('CAD', 'Sem Cadastro'),
         ('ALV', 'Sem Alvará'),
         ('DEB', 'Em Debito'),
         ('SB', 'Sem Baixa'),
     )
+    
     motivo = models.CharField(max_length=5, choices=ESCOLHA_MOTIVO, default=None)
     observacao = models.CharField(max_length=500)
     regularidade = models.BooleanField(default=False)
     prazo = models.PositiveIntegerField(default=30)
-    fiscal = models.ForeignKey(Fiscal, on_delete=models.PROTECT, default=None)
-    entidade = models.ForeignKey(Entidade, on_delete=models.PROTECT, default=None)
+    fiscal = models.ForeignKey('Fiscal', on_delete=models.PROTECT, default=None)
+    entidade = models.ForeignKey('Entidade', on_delete=models.PROTECT, default=None)
+
 
 class Parecer(models.Model):
     parecer = models.CharField(max_length=500)
