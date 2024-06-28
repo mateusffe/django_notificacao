@@ -1,15 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form name="form" id="form" action="/criarusuarioentidade" method="POST">
-        {% csrf_token %}
-        {{ f.as_p }}
-        <input type="submit" class="btn btn-success" value="Salvar">
-    </form>
-</body>
-</html>
+{%extends 'base.html' %}
+
+{%block conteudo %}
+    <div class="form-usuario">
+        <form name="form" id="form" action="/criarusuarioentidade" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if f.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in f.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <input type="submit" class="btn btn-success" value="Salvar">
+        </form>
+    </div>
+    <script>
+        document.getElementById('form').addEventListener('submit', function(event) {
+            var cnpj = document.getElementById('id_cnpj').value.trim();
+            var cpf = document.getElementById('id_cpf').value.trim();
+        
+            if (!cnpj && !cpf) {
+                alert('Você deve fornecer pelo menos um CPF ou CNPJ.');
+                event.preventDefault();  // Impede o envio do formulário
+            }
+        });
+        </script>
+        
+{%endblock%}
+

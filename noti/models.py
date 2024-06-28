@@ -14,6 +14,8 @@ class usuarioEntidade(models.Model):
     )
     escolha = models.CharField(max_length=10, choices=ESCOLHA_TIPO, default="A")
 
+    def __str__(self):
+        return self.user.username
   
 class Entidade(models.Model):
     razao_social = models.CharField(max_length=100, default=None)
@@ -25,13 +27,17 @@ class Entidade(models.Model):
     cnae = models.IntegerField(default=None, null=True, blank=True)
     usuario = models.OneToOneField(usuarioEntidade, on_delete=models.CASCADE, default=None,  blank=True, null=True)
 
+    def __str__(self):
+        return self.razao_social
+
 class Fiscal(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nome = models.CharField(max_length=256, null=True, blank=True)
     matricula = models.IntegerField(default=None)
     cpf = models.CharField(max_length=11, null=True, blank=True)
 
-
+    def __str__(self):
+        return self.nome if self.nome else "Fiscal sem nome"
 
 class Notificacao(models.Model):
     def gerar_codigo_verificador():
@@ -54,7 +60,12 @@ class Notificacao(models.Model):
     prazo = models.PositiveIntegerField(default=30)
     fiscal = models.ForeignKey('Fiscal', on_delete=models.PROTECT, default=None)
     entidade = models.ForeignKey('Entidade', on_delete=models.PROTECT, default=None)
-
+    
+    def __str__(self):
+        return str(self.notif)
+    
+    def format_data(self):
+        return self.data.strftime("%d/%m/%Y %H:%M")
 
 class Parecer(models.Model):
     parecer = models.CharField(max_length=500)
@@ -62,9 +73,14 @@ class Parecer(models.Model):
     fiscal = models.ForeignKey(Fiscal, on_delete=models.PROTECT)
     notificacao = models.ForeignKey(Notificacao, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return self.notificacao
 
 class Arquivo(models.Model):
     arquivo = models.FileField(upload_to='uploads/')
     nome_arquivo = models.CharField(max_length=20)
     notificacao = models.ForeignKey(Notificacao, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.nome_arquivo
 

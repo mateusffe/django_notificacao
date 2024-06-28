@@ -19,11 +19,32 @@
     <div class="col-8 m-auto pt-2 text-center">
         <b>Modelo:</b> Nome: {{db.razao_social}} <br>
         <b>Modelo:</b> CNPJ: {{db.cnpj}} <br>
-        <b>Modelo:</b> CPF: {{db.cnpj}} <br>
+        <b>Modelo:</b> CPF: {{db.cpf}} <br>
         
         <a href="/editarentidade/{{db.id}}/" class="btn btn-primary">Editar</a>
         <a href="/deletarentidade/{{db.id}}/" class="btn btn-danger btnDel">Deletar</a>
     </div>
-     
+    <br>
+    <div class="col-8 m-auto pt-2 text-center">
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Data</Datal></th>
+                <th scope="col">Nome Notificacao</th>
+                <th scope="col">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="empresalist">
+                {% for dbs in pn %}
+                    <tr>
+                        <td>{{dbs.data}}</td>
+                        <td>{{ dbs.notif }}</td>
+                        <td><a href="/visualizarnotificacao/{{dbs.codigo_verificador}}/" class="btn btn-primary">Visualizar</a></td>
+        
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>

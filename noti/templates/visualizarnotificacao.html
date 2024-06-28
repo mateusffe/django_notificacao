@@ -12,11 +12,12 @@
     </div>
     
     <div class="col-8 m-auto pt-2 text-center">
-        <a href="{% url 'buscaempresa' %}" class="btn btn-info">Voltar</a>
+        <a href="{% url 'buscanotificacao' %}" class="btn btn-info">Voltar</a>
     </div>
 
 
     <div class="col-8 m-auto pt-2 text-center">
+        
        Código Verificador: {{db.codigo_verificador}} <br>
        Notificação: {{db.notif}} <br>
         Data: {{db.data}} <br>
@@ -27,17 +28,44 @@
          Entidade: {{db.entidade}} <br>
 
         
-        <a href="/editarentidade/{{db.id}}/" class="btn btn-primary">Editar</a>
-        <a href="/deletarentidade/{{db.id}}/" class="btn btn-danger btnDel">Deletar</a>
+        <a href="/editarnotificacao/{{db.codigo_verificador}}/" class="btn btn-primary">Editar</a>
+        {%if db.regularidade == False%}
+         <a href="/regularizar/{{db.codigo_verificador}}/" class="btn btn-danger btnDel">Regularizar</a>
+        {%endif%}
+        <a href="/generate_pdf/{{db.codigo_verificador}}/" class="btn btn-primary">gerar</a>
+       
+        </div>
 
-
+        <br>
+        <h1>ARQUIVOS RELACIONADOS</h1>
+        <div class="col-8 m-auto pt-2 text-center">
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Download</th>
+                  </tr>
+                </thead>
+                <tbody id="empresalist">
+                    {% for dbs in ar %}
+                        <tr>
+                            <th scope="row">{{ dbs.nome_arquivo}}</th>
+                            <td><a href="/download_arquivo/{{dbs.id}}">Download</a></td>
+                            
+            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <h1>PARECERES</h1>
         <div class="col-8 m-auto pt-2 text-center">
             <table class="table table-striped">
                 <thead>
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Nome Entidade</th>
-                    <th scope="col">Ações</th>
                   </tr>
                 </thead>
                 <tbody id="empresalist">
@@ -53,7 +81,6 @@
             </table>
         </div>
        
-    </div>
-     
+
 </body>
 </html>

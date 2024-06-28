@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form name="form" id="form" action="/salvarnotificacao" method="POST">
+{%extends 'base.html' %}
+
+{%block conteudo %}
+<div class="form-container">
+    <form name="form" id="form" action="{% if db %}/alterarnotificacao/{{db.codigo_verificador}}/{%else%}/salvarnotificacao{%endif%}" method="POST">
         {% csrf_token %}
-        {{ f.as_p }}
+        {{ form.as_p }}
         <input type="submit" class="btn btn-success" value="Salvar">
     </form>
-</body>
-</html>
+</div>
+{%endblock%}
