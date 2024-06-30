@@ -1,13 +1,14 @@
 import random
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 
 
 class usuarioEntidade(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='usuarioentidade')
     liberado = models.BooleanField(default=False)
     ESCOLHA_TIPO = (        ('Autonomo', 'autonomo'),
         ('Empresa', 'empresa')
@@ -16,7 +17,21 @@ class usuarioEntidade(models.Model):
 
     def __str__(self):
         return self.user.username
-  
+
+    def save(self, *args, **kwargs):
+        if not self.liberado:
+            self.user.is_active = False
+            self.user.save()
+        super().save(*args, **kwargs)
+    
+    
+@receiver(post_save, sender=usuarioEntidade)
+def update_user_is_active(sender, instance, created, **kwargs):
+     if instance.liberado and not instance.user.is_active:
+        instance.user.is_active = True
+        instance.user.save()
+
+
 class Entidade(models.Model):
     razao_social = models.CharField(max_length=100, default=None)
     nome_fantasia = models.CharField(max_length=100, blank=True)
@@ -25,7 +40,7 @@ class Entidade(models.Model):
     endereco = models.CharField(max_length=100)
     cp = models.CharField(max_length=50 ,null=True, blank=True)
     cnae = models.IntegerField(default=None, null=True, blank=True)
-    usuario = models.OneToOneField(usuarioEntidade, on_delete=models.CASCADE, default=None,  blank=True, null=True)
+    usuario = models.OneToOneField(usuarioEntidade, on_delete=models.SET_NULL, default=None,  blank=True, null=True)
 
     def __str__(self):
         return self.razao_social

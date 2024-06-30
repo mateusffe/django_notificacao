@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alterando</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-</head>
-<body>
+{%extends 'base.html'%}
+{%block titulo%}Visualizar Empresa{%endblock%}
+{%block conteudo%}
     <div class="col-8 m-auto pt-2 text-center">
-        <h1>Visualização</h1>
-    </div>
-    
-    <div class="col-8 m-auto pt-2 text-center">
-        <a href="{% url 'buscaempresa' %}" class="btn btn-info">Voltar</a>
-    </div>
-
-
-    <div class="col-8 m-auto pt-2 text-center">
-        <b>Modelo:</b> Nome: {{db.razao_social}} <br>
-        <b>Modelo:</b> CNPJ: {{db.cnpj}} <br>
-        <b>Modelo:</b> CPF: {{db.cpf}} <br>
+        <div style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9; width: 500px; margin: 0 auto; text-align: left;">
+            <p><b>Razão Social:</b> {{ db.razao_social }}</p>
+            {% if db.cnpj %}
+                <p><b>Nome Fantasia:</b> {{ db.nome_fantasia }}</p>
+                <p><b>CNPJ:</b> {{ db.cnpj }}</p>
+            {% else %}
+                <p><b>CPF:</b> {{ db.cpf }}</p>
+            {% endif %} 
+            <p><b>Endereço:</b> {{ db.endereco }}</p>
+            <p><b>Carteira Profissional:</b> {{ db.cp }}</p>
+            <p><b>CNAE:</b> {{ db.cnae }}</p>
+            <p><b>Usuário Ligado:</b> {{ db.usuario }}</p>
+        </div>
+        
         
         <a href="/editarentidade/{{db.id}}/" class="btn btn-primary">Editar</a>
         <a href="/deletarentidade/{{db.id}}/" class="btn btn-danger btnDel">Deletar</a>
@@ -46,5 +42,4 @@
             </tbody>
         </table>
     </div>
-</body>
-</html>
+{%endblock%}

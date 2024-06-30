@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>inicial</title>
+    <title>{%block titulo%}{%endblock%}</title>
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css'  %}">
     <link rel="stylesheet" href="{% static 'css/Lista-Productos-Canito.css' % }">
     <link rel="stylesheet" href="{% static 'css/Login-Form-Basic-icons.css' %}">
@@ -20,18 +20,19 @@
         {% if user.is_staff %}
             <nav class="navbar navbar-expand-md bg-body d-flex justify-content-center align-items-center py-3" style="box-shadow: 0px 1px 20px var(--bs-navbar-color);">
                 <div class="container">
-                    <a class="navbar-brand d-flex align-items-center" href="#"><span style="font-size: 42px;">Denotify</span></a>
+                    <a class="navbar-brand d-flex align-items-center" href="{%url 'index'%}"><span style="font-size: 42px;">Denotify</span></a>
                     <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
                         <span class="visually-hidden">Toggle navigation</span>
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse d-inline-flex d-xl-flex flex-row align-items-start justify-content-xl-end align-items-xl-center" data-bs-toggle="tooltip" data-bss-tooltip="" id="navcol-1">
                         <ul class="navbar-nav ms-auto">
-                            <li class="nav-item"><a class="nav-link d-flex justify-content-center align-items-center" href="https://127.0.0.1:8000/">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link d-flex justify-content-center align-items-center" href="{%url 'index'%}">Dashboard</a></li>
                             <li class="nav-item dropdown">
                                 <a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#">Notificação</a>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="/notificar">Notificar</a>
+                                    <a class="dropdown-item" href="/parecer">Dar Parecer</a>
                                     <a class="dropdown-item" href="{% url 'buscanotificacao' %}">Buscar Notificação</a>
                                 </div>
                             </li>
@@ -53,12 +54,12 @@
                                 <a class="dropdown-toggle nav-link" aria-expanded="true" data-bs-toggle="dropdown" href="#">Outros</a>
                                 <div class="dropdown-menu" data-bs-popper="none">
                                     <a class="dropdown-item" href="/validador">Validador</a>
-                                    <a class="dropdown-item" href="#">Second Item</a>
-                                    <a class="dropdown-item" href="#">Third Item</a>
+                                    <a class="dropdown-item" href="/upload_arquivo">Upload Arquivos</a>
+                                    <a class="dropdown-item" href="#">Atualizações</a>
                                 </div>
                             </li>
                         </ul>
-                        <button class="btn btn-primary" type="button" style="padding: 5px;margin: 0;">Gerar</button>
+                       
                     </div>
                     <form action="{% url 'logout' %}" method="post">
                         {% csrf_token %}
@@ -69,7 +70,7 @@
         {% else %}
             <nav class="navbar navbar-expand-md bg-body py-3" style="box-shadow: 0px 1px 20px var(--bs-navbar-color);">
                 <div class="container">
-                    <a class="navbar-brand d-flex align-items-center" href="#"><span style="font-size: 42px;">Denotify</span></a>
+                    <a class="navbar-brand d-flex align-items-center" href="{%url 'index'%}"><span style="font-size: 42px;">Denotify</span></a>
                     <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-2">
                         <span class="visually-hidden">Toggle navigation</span>
                         <span class="navbar-toggler-icon"></span>
@@ -78,8 +79,8 @@
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item"></li>
                             <li class="nav-item"></li>
-                            <li class="nav-item"><a class="nav-link" href="dashboardempresa.html">Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link" href="#">Histórico</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{%url 'index'%}">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'historico'%}">Histórico</a></li>
                             <li class="nav-item"><a class="nav-link" href="/validador">Validador</a></li>
                             <li class="nav-item"></li>
                             <li class="nav-item"></li>
@@ -94,7 +95,7 @@
     {%else%}
         <nav class="navbar navbar-expand-md bg-body py-3" style="box-shadow: 0px 1px 20px var(--bs-navbar-color);">
             <div class="container">
-                <a class="navbar-brand d-flex align-items-center" href="#"><span style="font-size: 42px;">Denotify</span></a>
+                <a class="navbar-brand d-flex align-items-center" href="{%url 'index'%}"><span style="font-size: 42px;">Denotify</span></a>
                 <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-2">
                     <span class="visually-hidden">Toggle navigation</span>
                     <span class="navbar-toggler-icon"></span>
@@ -104,7 +105,7 @@
                         <li class="nav-item"></li>
                         <li class="nav-item"></li>
                         <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/">Cadastro</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/criarusuarioentidade">Cadastro</a></li>
                         <li class="nav-item"><a class="nav-link" href="/validador">Validador</a></li>
                         <li class="nav-item"></li>
                         <li class="nav-item"></li>
@@ -115,8 +116,10 @@
     {%endif%}
 
     {%block conteudo%}{%endblock%}
-
-
+    
+    <div id="footer-mini" style="width:100%; display:flex;justify-content: center;align-items: center;margin-top:30px;">
+        <i>Produções Mateus Scheffer - 2024</i>
+    </div>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/bs-init.js' %}"></script>
 </body>

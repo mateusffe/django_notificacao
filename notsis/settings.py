@@ -57,10 +57,9 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'notsis.urls'
 
 
-AUTHENTICATION_BACKENDS = [
+AUAUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

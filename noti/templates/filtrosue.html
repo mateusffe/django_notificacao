@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{%block titulo%}Filtro Usuário{%endblock%}
+{% block conteudo %}
+    {% if not user.is_staff %}
+        <div class="col-8 m-auto pt-2 text-center">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Nº</th>
+                    <th scope="col">Empresa</th>
+                    <th scope="col">Regular</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Ações</th>
+                </tr>
+                </thead>
+                
+                <tbody>
+                    {% for dbs in db %}
+                        <tr>
+                            <th scope="row">{{ dbs.notif }}</th>
+                            <td>{{ dbs.entidade }}</td>
+                            {% if dbs.regularidade == False %}
+                                <td>Irregular</td>
+                            {% else %}
+                                <td>Regular</td>
+                            {% endif %}
+                            {% if dbs.regularidade == False and dbs.data <= data_limite %} 
+                                <td class="text-danger" style="font-weight:bold">
+                                    {{ dbs.data|date:"d/m/Y H:i" }} 
+                                </td>
+                            {% else %}
+                                <td>
+                                    {{ dbs.data|date:"d/m/Y H:i" }}
+                                </td>
+                            {% endif %}
+                            <td> <a href="/visualizarnotificacao/{{ dbs.codigo_verificador }}/" class="btn btn-dark">Visualizar</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="pagination">
+                {% if db.has_previous %}
+                    <a href="?page={{ db.previous_page_number }}"> < </a>
+                {% endif %}
+                {{ db.number }}
+                {% if db.has_next %}
+                    <a href="?page={{ db.next_page_number }}"> > </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

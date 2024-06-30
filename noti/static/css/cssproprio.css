@@ -141,3 +141,76 @@ body {
 .form-usuario input[type=submit]:hover {
     background-color: #45a049;
 }
+
+.page_visu_notif .section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.page_visu_notif .section h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.page_visu_notif .card {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.page_visu_notif .card a.btn {
+    margin-right: 10px;
+}
+
+.page_visu_notif .table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.page_visu_notif .table th,
+.page_visu_notif .table td {
+    padding: 8px;
+    text-align: left;
+}
+
+.page_visu_notif .table th {
+    background-color: #f2f2f2;
+}
+
+.page_visu_notif .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.page_visu_notif .table-striped tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.page_visu_notif .table-striped tbody td {
+    vertical-align: middle;
+}
+
+.page_visu_notif .notification-details {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.page_visu_notif .notification-details p {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.page_visu_notif .notification-details p strong {
+    font-weight: bold;
+    color: #555;
+}

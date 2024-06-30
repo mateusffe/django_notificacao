@@ -1,5 +1,6 @@
-{% extends 'baseusuario.html'%}
-{%block ct%}
+{% extends 'base.html'%}
+{%block titulo%}Buscar Histórico{%endblock%}
+{%block conteudo%}
 <div class="col-8 m-auto pt-2 text-center">
         <table class="table table-striped">
             <thead>
@@ -12,7 +13,7 @@
             </thead>
             
             <tbody>
-                {% for dbs in f %}
+                {% for dbs in db %}
                     <tr>
                         <th scope="row">{{dbs.notif}}</th>
                         <td>{{dbs.data}}</td>
@@ -26,15 +27,7 @@
                         </td>
                     </tr>
                 {% endfor %}
-                <div class="pagination">
-                    {% if db.has_previous %}
-                        <a href="?page={{db.previous_page_number}}"> < </a>
-                    {% endif %}
-                    {{db.number}}
-                    {% if db.has_next %}
-                        <a href="?page={{db.next_page_number}}"> > </a>
-                    {% endif %}
-                </div>
+                
             </tbody>
           </table>
     </div>

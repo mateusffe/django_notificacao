@@ -4,8 +4,12 @@ from django.views import View
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Q
 import re
+from django.utils import timezone
+
 from datetime import timedelta
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils.http import urlencode
+
 
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -23,44 +27,78 @@ def loginredirect(request):
     return redirect('accounts/login')
 
 
+def is_staff(user):
+    return user.is_staff
+
+def is_not_staff(user):
+    return not user.is_staff
 
 ##INDEX PARA FISCAL E USUARIO
 
 def index(request):
-    if str(request.user) == 'AnonymousUser':
-        teste = 'Usuário não logado'
+   
+    usuario = request.user
+    prazo_limite = timezone.now() - timedelta(days=30)
+    if usuario.is_authenticated:
+        if usuario.is_staff:
+            count_irregulares = Notificacao.objects.filter(regularidade=False).count()
+            count_regulares = Notificacao.objects.filter(regularidade=True).count()
+            count_total = Notificacao.objects.count()
+            count_fora_do_prazo = Notificacao.objects.filter(Q(data__lte=prazo_limite) & Q(regularidade=False)).count()
+             
+            context = { 
+            'irregulares':count_irregulares,
+            'regulares':count_regulares,
+            'total':count_total,
+            'data':count_fora_do_prazo,
+            
+            }
+            return render(request, 'index.html', context)
+        else:
+            entidade = Entidade.objects.get(usuario__user=usuario)
+            notificacoes = Notificacao.objects.filter(entidade=entidade)
+            c_not_usuario_ab = notificacoes.filter(regularidade=False).count()
+            c_usuario_limit = notificacoes.filter(Q(data__lte=prazo_limite) & Q(regularidade=False)).count()
+            context = {
+            'total':notificacoes.count(),
+            'abertos':c_not_usuario_ab,
+            'data_us':c_usuario_limit,
+            } 
+            return render(request, 'index.html', context)
+   
     else:
-        teste = 'Usuário Logado'
+         return render(request, 'index.html')
+ 
+    
 
-    context = { 
-        'logado':teste
-    }
-    return render(request, 'index.html', context)
-
-def indexcomum(request):
-    return render(request, 'indexcomum.html')
 
 
 #INICIO CODIFICAÇÃO PARA ENTIDADE
-
+@login_required
+@user_passes_test(is_staff)
 def forment(request):
     data = {}
     data['form'] = EntidadeForm()
     return render(request, 'formentidade.html', data)
 
+@login_required
+@user_passes_test(is_staff)
 def criaentidade(request):
     form= EntidadeForm(request.POST or None)
     if form.is_valid():
         form.save()
         return redirect('index')
-    
+
+@login_required
+@user_passes_test(is_staff)
 def editarentidade(request, pk):
     data = {} 
     data['db'] = Entidade.objects.get(pk=pk)
     data['form'] = EntidadeForm(instance = data['db'])
     return render(request, 'formentidade.html', data)
 
-
+@login_required
+@user_passes_test(is_staff)
 def alterarentidade(request, pk): 
     data = {}
     data['db'] = Entidade.objects.get(pk=pk)
@@ -68,8 +106,17 @@ def alterarentidade(request, pk):
     if form.is_valid():
         form.save()
         return redirect('buscaempresa')
+    else: 
+        error_message = "FORMULARIO INVALIDO."
+        fm = EntidadeForm(instance = data['db'])
+        data={
+            'error_message':error_message,
+            'form':fm,
+        }
+        return render(request, 'formentidade.html', data)
 
-
+@login_required
+@user_passes_test(is_staff)
 def buscaempresa(request):
     dados = {}
     form = buscaempresafilter(request.GET or None)
@@ -123,13 +170,16 @@ def buscaempresa(request):
     dados['form'] = form
     return render(request, 'buscaempresa.html', dados)
 
+@login_required
+@user_passes_test(is_staff)
 def deletarentidade(request, pk): 
     data = {}
     data['db'] = Entidade.objects.get(pk=pk)
     data['db'].delete()
     return redirect('buscaempresa')
 
-
+@login_required
+@user_passes_test(is_staff)
 def visualizarentidade(request, pk):
     data = {}
     data['db'] = Entidade.objects.get(pk=pk)
@@ -152,46 +202,90 @@ def criaruserent(request):
     if form.is_valid():
         form.save(commit=True)        
         return redirect('index')
+    
     else:
         return render(request, 'formcadastrousuario.html',{'form':form})
     
 
-
+@login_required
+@user_passes_test(is_staff)
 def buscausuario(request):
     dados = {}
     form = buscaempresafilter(request.GET or None)
-    all = usuarioEntidade.objects.all()
-    
+    all_users = usuarioEntidade.objects.all()
+
     if form.is_valid():
-        if form.cleaned_data.get('nome'):
-            all = all.filter(user__username__icontains=form.cleaned_data['nome'])
-    all =all.order_by('liberado')
-    paginator = Paginator(all, 5)
+        queries = []
+        search_input = form.cleaned_data.get('nome')
+
+        if search_input: 
+            liberado_match = re.search(r'liberado:\s*([^\s]+)', search_input, re.IGNORECASE)
+            escolha_match = re.search(r'tipo:\s*([^\s]+)', search_input, re.IGNORECASE)
+
+            if liberado_match:
+                lib = liberado_match.group(1).lower()
+                if lib in ['true', '1', 'liberado']:
+                    queries.append(Q(liberado=True))
+                elif lib in ['false', '0', 'no']:
+                    queries.append(Q(liberado=False))
+
+            if escolha_match:
+                esc = escolha_match.group(1)
+                queries.append(Q(escolha__icontains=esc))
+            
+            if not liberado_match and not escolha_match:
+                queries.append(Q(user__username__icontains=form.cleaned_data['nome']))
+
+        if queries:
+            combined_query = Q()
+            for query in queries:
+                combined_query &= query
+            filtrado = all_users.filter(combined_query)
+        else:
+            filtrado = all_users
+
+        all_users = filtrado
+
+    all_users = all_users.order_by('liberado')
+    paginator = Paginator(all_users, 5)
     pages = request.GET.get('page')
     dados['db'] = paginator.get_page(pages)
     
+    
     if request.is_ajax():
-        data = [
-            {
-                'user': dbs.user,
-                'escolha':dbs.escolha,
+        data = []
+        for dbs in dados['db']:
+            try:
+                entidade = Entidade.objects.get(usuario=dbs)
+                entidade_razao_social = entidade.razao_social
+            except Entidade.DoesNotExist:
+                entidade_razao_social = None
+
+            data.append({
+                'user': dbs.user.username,
+                'escolha': dbs.escolha,
                 'liberado': dbs.liberado,
-            }
-            for dbs in dados['db']
-        ]
+                'entidade': entidade_razao_social,
+            })
+        
         return JsonResponse(data, safe=False)
     
     dados['form'] = form
     return render(request, 'buscausuario.html', dados)
 
+
 ##FIM CODIGO USUARIO ENTIDADE
 
 ##LOGICA NOTIFICACAO 
+@login_required
+@user_passes_test(is_staff)
 def CriarNotificacao(request):
     data = {}
     data['form'] = NotificacaoForm()
     return render(request, 'cadastrarnotificacao.html', data)
 
+@login_required
+@user_passes_test(is_staff)
 def salvarnotificacao(request):
     form= NotificacaoForm(request.POST or None)
     if form.is_valid():
@@ -199,11 +293,13 @@ def salvarnotificacao(request):
         return redirect('index')
 
 @login_required
+@user_passes_test(is_staff)
 def buscanotificacao(request):
     dados = {}
     form = buscaempresafilter(request.GET or None)
     all =  Notificacao.objects.all()
-       
+    data_limite = timezone.now() - timedelta(days=30)
+
  
     if form.is_valid():
         queries = []
@@ -237,6 +333,7 @@ def buscanotificacao(request):
     paginator = Paginator(all, 10)
     pages = request.GET.get('page')
     dados['db'] = paginator.get_page(pages)
+     
     
     if request.is_ajax():
         data = [
@@ -250,8 +347,11 @@ def buscanotificacao(request):
         return JsonResponse(data, safe=False)
     
     dados['form'] = form
-    return render(request, 'buscanotificaogeral.html', dados)
+    dados['data_limite'] = data_limite
     
+    return render(request, 'buscanotificaogeral.html', dados)
+
+@login_required
 def visualizarnotificacao(request, pk):
     data = {}
     data['db'] = Notificacao.objects.get(pk=pk)
@@ -260,7 +360,9 @@ def visualizarnotificacao(request, pk):
     data['ar'] = Arquivo.objects.all()
     data['ar'] = data['ar'].filter(notificacao__codigo_verificador__icontains= pk)
     return  render(request, 'visualizarnotificacao.html', data)
-    
+
+@login_required
+@user_passes_test(is_staff)
 def regularizar(request, pk):
     notificacao = Notificacao.objects.get(pk=pk)
     notificacao.regularidade = True
@@ -268,6 +370,7 @@ def regularizar(request, pk):
     return redirect('index')
     
 @login_required
+@user_passes_test(is_staff)
 def editarnotificacao(request, pk):
     data = {} 
     data['db'] = Notificacao.objects.get(pk=pk)
@@ -275,6 +378,7 @@ def editarnotificacao(request, pk):
     return render(request, 'cadastrarnotificacao.html', data)
 
 @login_required
+@user_passes_test(is_staff)
 def alterarnotificacao(request, pk): 
     data = {}
     data['db'] = Notificacao.objects.get(pk=pk)
@@ -286,12 +390,14 @@ def alterarnotificacao(request, pk):
 
 ##PARECER
 @login_required
+@user_passes_test(is_staff)
 def CriarParecer(request):
     data = {}
     data['f'] = ParecerForm()
     return render(request, 'parecer.html', data)
 
 @login_required
+@user_passes_test(is_staff)
 def salvarparecer(request):
     form= ParecerForm(request.POST or None)
     if form.is_valid():
@@ -301,6 +407,7 @@ def salvarparecer(request):
 
 
 @login_required
+@user_passes_test(is_staff)
 def generate_pdf(request, codigo_verificador):
     # Obter a notificação pelo código verificador
     notificacao = Notificacao.objects.get(codigo_verificador=codigo_verificador)
@@ -345,6 +452,7 @@ def generate_pdf(request, codigo_verificador):
     return response
 
 @login_required
+@user_passes_test(is_staff)
 def criaarquivo(request):
     if request.method == 'POST':
         form = ArquivoForm(request.POST,request.FILES)
@@ -390,31 +498,87 @@ def validador(request):
 
 
 @login_required
-def listar_notificacoes(request):
+@user_passes_test(is_not_staff)
+def historicousuario(request):
+    data = {}
     usuario = request.user
-    try:
-        usuario_entidade = usuarioEntidade.objects.get(user=usuario)
-        entidade = usuario_entidade.entidade
-    except usuarioEntidade.DoesNotExist:
-        entidade = None
+    entidade = Entidade.objects.get(usuario__user=usuario)
+    data['db'] = Notificacao.objects.filter(entidade=entidade)   
+    return render(request, 'buscanotiusuario.html', data)
 
-    if entidade:
-        notificacoes = Notificacao.objects.filter(entidade=entidade)
-    else:
-        notificacoes = []
-
-    # Paginação
-    paginator = Paginator(notificacoes, 10)  # Mostra 10 notificações por página
-    page = request.GET.get('page')
+@login_required
+@user_passes_test(is_not_staff)
+def paginausuario(request, id):
+    usuario_entidade = usuarioEntidade.objects.get(id=id)
+    action = request.GET.get('action', 'view')  # Default to 'view' if no action is specified
     
-    try:
-        notificacoes_paginadas = paginator.page(page)
-    except PageNotAnInteger:
-        notificacoes_paginadas = paginator.page(1)
-    except EmptyPage:
-        notificacoes_paginadas = paginator.page(paginator.num_pages)
+    if action == 'view':
+        data={}
+        data['db'] = usuarioEntidade.objects.get(id=id)
+        data['et'] = Entidade.objects.get(usuario__user=id)
+        return render(request, 'paginausuario.html', data)
 
-    context = {
-        'f': notificacoes_paginadas
-    }
-    return render(request, 'buscanotiusuario.html', context)
+    elif action == 'delete':
+        try:
+            entidade = Entidade.objects.get(usuario=usuario_entidade)
+            entidade.usuario = None  # Dissociar a entidade do usuarioEntidade
+        except Entidade.DoesNotExist:
+           pass
+        usuario_entidade.delete()  # Excluir o usuarioEntidade
+        return redirect('index')  # Redirecionar para a lista de usuários após deletar
+    
+    elif action == 'libera':
+        usuario_entidade.liberado = True
+        usuario_entidade.save()
+        return redirect('/buscausuario')
+    else:
+        # Ação padrão (visualizar)
+        return render(request, 'paginausuario.html', {'usuario_entidade': usuario_entidade})
+
+@login_required
+@user_passes_test(is_staff)
+def filtros(request):
+    prazo_limite = timezone.now() - timedelta(days=30)
+
+    action = request.GET.get('action')
+    data ={}
+    if action == 'aberto':
+        notificacoes = Notificacao.objects.filter(regularidade=False)
+    elif action == 'foraprazo':
+        notificacoes = Notificacao.objects.filter(Q(data__lte=prazo_limite) & Q(regularidade=False))
+    elif action=='total': 
+        notificacoes = Notificacao.objects.all()
+    elif action=='regular':
+        notificacoes = Notificacao.objects.filter(regularidade=True)
+    else:
+        return redirect('index')
+    
+    paginator = Paginator(notificacoes, 10) 
+    page_number = request.GET.get('page')
+    data['db'] = paginator.get_page(page_number)
+    
+    return render(request, 'filtros.html', data)
+
+@login_required
+@user_passes_test(is_not_staff)
+def filtrosue(request):
+    usuario = request.user 
+    prazo_limite = timezone.now() - timedelta(days=30)
+    entidade = Entidade.objects.get(usuario__user=usuario)
+    if not usuario.is_staff:
+        action = request.GET.get('action')
+        data ={}
+        if action == 'aberto':
+            notificacoes =  Notificacao.objects.filter(Q(entidade=entidade) & Q(regularidade=False))
+        elif action == 'foraprazo':
+            notificacoes = Notificacao.objects.filter(Q(data__lte=prazo_limite) & Q(regularidade=False) & Q(entidade=entidade))
+        elif action=='total': 
+            notificacoes = Notificacao.objects.filter(entidade=entidade)
+        else:
+            return redirect('index')
+        
+    paginator = Paginator(notificacoes, 10) 
+    page_number = request.GET.get('page')
+    data['db'] = paginator.get_page(page_number)
+    
+    return render(request, 'filtrosue.html', data)

@@ -1,5 +1,5 @@
 {%extends 'base.html' %}
-
+{%block titulo%}Buscar Notificação{%endblock%}
 {%block conteudo %}
     <div class="col-8 m-auto pt-2 text-center">
         <form name="form" id="form" action="{% url 'buscanotificacao' %}" method="GET" style="display:flex; align-items:center; justify-content: center;margin-top:20px;">
@@ -28,7 +28,15 @@
                         {%else%}
                             <td>Regular</td>
                         {%endif%}
-                        <td>{{dbs.data}}</td>
+                        {% if dbs.regularidade == False and dbs.data <= data_limite %} 
+                            <td class="text-danger" style="font-weight:bold">
+                                {{ dbs.data|date:"d/m/Y H:i" }} 
+                            </td>
+                        {% else %}
+                        <td>
+                            {{ dbs.data|date:"d/m/Y H:i" }}
+                        </td>
+                        {%endif%}
                         <td>
                             <a href="/visualizarnotificacao/{{dbs.codigo_verificador}}/" class="btn btn-dark">Visualizar</a>
                             <a href="/editarnotificacao/{{dbs.codigo_verificador}}/" class="btn btn-primary">Editar</a>

@@ -13,7 +13,6 @@ urlpatterns = [
     path('visualizarentidade/<int:pk>/', views.visualizarentidade, name='visualizarentidade'),
     path('criarusuarioentidade', views.criaruserent),
     path('formcadastro', views.userent, name='cadastrarent'),
-    path('indexcomum',views.indexcomum),
     path("accounts/", include("django.contrib.auth.urls"), name='loginoriginal'),
     path("login", views.loginredirect),
     path("notificar", views.CriarNotificacao, name='notificar'),
@@ -29,5 +28,8 @@ urlpatterns = [
     path('upload_arquivo/', views.criaarquivo, name='upload_arquivo'),
     path('download_arquivo/<int:arquivo_id>/', views.download_arquivo, name='download_arquivo'),
     path('validador/', views.validador),
-    path('buscanotiusuario',views.listar_notificacoes),
+    path('historico',views.historicousuario, name='historico'),
+    path('paginausuario/<int:id>/', views.paginausuario, name='paginausuario'),
+    path('filtros/', views.filtros, name='filtros'),
+    path('filtrousuario/', views.filtrosue, name='filtrosusuario')
 ]

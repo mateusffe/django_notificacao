@@ -1,86 +1,68 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alterando</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-</head>
-<body>
-    <div class="col-8 m-auto pt-2 text-center">
-        <h1>Visualização</h1>
-    </div>
-    
-    <div class="col-8 m-auto pt-2 text-center">
-        <a href="{% url 'buscanotificacao' %}" class="btn btn-info">Voltar</a>
-    </div>
-
-
-    <div class="col-8 m-auto pt-2 text-center">
-        
-       Código Verificador: {{db.codigo_verificador}} <br>
-       Notificação: {{db.notif}} <br>
-        Data: {{db.data}} <br>
-        Motivo: {{db.motivo}} <br>
-        Regularidade: {{db.regularidade}} <br>
-       Prazo: {{db.prazo}} <br>
-        Fiscal: {{db.fiscal}} <br>
-         Entidade: {{db.entidade}} <br>
-
-        
-        <a href="/editarnotificacao/{{db.codigo_verificador}}/" class="btn btn-primary">Editar</a>
-        {%if db.regularidade == False%}
-         <a href="/regularizar/{{db.codigo_verificador}}/" class="btn btn-danger btnDel">Regularizar</a>
-        {%endif%}
-        <a href="/generate_pdf/{{db.codigo_verificador}}/" class="btn btn-primary">gerar</a>
-       
+{% extends 'base.html' %}
+{%block titulo%}Visualizar Notificação{%endblock%}
+{% block conteudo %}
+    <div class="col-8 m-auto pt-2 text-center page_visu_notif">
+        <div class="card" style="font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9; width: 500px; margin: 0 auto; text-align: left;">
+            <h1>Dados da Notificação</h1>
+            <div class="notification-details">
+                <p><strong>Código Verificador:</strong> {{ db.codigo_verificador }}</p>
+                <p><strong>Notificação:</strong> {{ db.notif }}</p>
+                <p><strong>Data:</strong> {{ db.data }}</p>
+                <p><strong>Motivo:</strong> {{ db.motivo }}</p>
+                <p><strong>Regularidade:</strong> {{ db.regularidade }}</p>
+                <p><strong>Prazo:</strong> {{ db.prazo }}</p>
+                <p><strong>Fiscal:</strong> {{ db.fiscal }}</p>
+                <p><strong>Entidade:</strong> {{ db.entidade }}</p>
+            </div>
+            {%if user.is_staff%}
+                <a href="/editarnotificacao/{{ db.codigo_verificador }}/" class="btn btn-primary">Editar</a>
+                {% if not db.regularidade %}
+                    <a href="/regularizar/{{ db.codigo_verificador }}/" class="btn btn-danger btnDel">Regularizar</a>
+                {% endif %}
+                {%if not db.entidade %}
+                <a href="/generate_pdf/{{ db.codigo_verificador }}/" class="btn btn-primary">Gerar PDF</a>
+                {%endif%}
+            {%endif%}
         </div>
 
-        <br>
-        <h1>ARQUIVOS RELACIONADOS</h1>
-        <div class="col-8 m-auto pt-2 text-center">
+        <div class="section">
+            <h1>Arquivos Relacionados</h1>
             <table class="table table-striped">
                 <thead>
-                  <tr>
-                    <th scope="col">Nome</th>
-                    <th scope="col">Download</th>
-                  </tr>
+                    <tr>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Download</th>
+                    </tr>
                 </thead>
-                <tbody id="empresalist">
-                    {% for dbs in ar %}
+                <tbody>
+                    {% for arquivo in ar %}
                         <tr>
-                            <th scope="row">{{ dbs.nome_arquivo}}</th>
-                            <td><a href="/download_arquivo/{{dbs.id}}">Download</a></td>
-                            
-            
+                            <td>{{ arquivo.nome_arquivo }}</td>
+                            <td><a href="/download_arquivo/{{ arquivo.id }}">Download</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-        <br>
-        <h1>PARECERES</h1>
-        <div class="col-8 m-auto pt-2 text-center">
+
+        <div class="section">
+            <h1>Pareceres</h1>
             <table class="table table-striped">
                 <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nome Entidade</th>
-                  </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Parecer</th>
+                    </tr>
                 </thead>
-                <tbody id="empresalist">
-                    {% for dbs in pn %}
+                <tbody>
+                    {% for parecer in pn %}
                         <tr>
-                            <th scope="row">{{ dbs.id}}</th>
-                            <td>{{ dbs.parecer }}</td>
-                            
-            
+                            <td>{{ parecer.id }}</td>
+                            <td>{{ parecer.parecer }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-       
-
-</body>
-</html>
+    </div>
+{% endblock %}

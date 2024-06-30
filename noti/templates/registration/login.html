@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>Log In</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form }}
-  <button type="submit">Log In</button>
-</form>
-</body>
-</html>
+{%extends 'base.html' %}
+{%block titulo%}Login{%endblock%}
+{%block conteudo%}
+
+    <div class="form-usuario" style="margin-top:100px">
+      <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" style="background-color: green;border-radius: 7px;font-size: 20px;font-weight: bold;color:white;">Entrar</button>
+      </form>
+    </div>
+{%endblock%}

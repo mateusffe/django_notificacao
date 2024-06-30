@@ -1,6 +1,9 @@
 {%extends 'base.html' %}
-
+{%block titulo%}Cadastro Entidade{%endblock%}
 {%block conteudo %}
+{% if error_message%}
+   <h1>{{error_message}}</h1> 
+{%endif%}
 <div class="form-entidade">
     <form name="form" id="form" action="{% if db %}/alterarentidade/{{db.id}}/{%else%}criaentidade{%endif%}" method="POST">
         {% csrf_token %}
