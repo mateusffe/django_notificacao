@@ -1,0 +1,217 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+.form-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 6px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(216, 209, 209, 0.1);
+}
+.form-notificacao input,select{
+    margin:5px;
+    width:500px;
+}
+.form-container input,select, textarea {
+    margin-bottom: 5px;
+    width:580px;
+    border-radius: 4px;;
+}
+.form-container input[type=checkbox]{
+    width:50px;
+}
+.form-container input[type=submit] {
+    background-color: #0aa303;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.form-container input[type=submit]:hover {
+    background-color: #0cad05;
+}
+.form-entidade {
+    max-width: 600px;
+    margin: 10px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+.form-entidade form {
+    display: flex;
+    flex-direction: column;
+}
+.form-entidade label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.form-entidade input[type=text], 
+.form-entidade input[type=number], 
+.form-entidade textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+.form-entidade select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5H7z"/></svg>');
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 12px);
+    background-position-y: center;
+}
+.form-entidade input[type=checkbox] {
+    margin-top: 5px;
+}
+.form-entidade input[type=submit] {
+    background-color: #0aa303;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.form-entidade input[type=submit]:hover {
+    background-color: #0cad05;
+}
+.form-usuario {
+    max-width: 400px;
+    margin: 10px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+.form-usuario form {
+    display: flex;
+    flex-direction: column;
+}
+.form-usuario label {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+.form-usuario input[type=text], 
+.form-usuario input[type=password] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+.form-usuario input[type=submit] {
+    background-color: #0aa303;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.form-usuario input[type=submit]:hover {
+    background-color: #0cad05;
+}
+
+.page_visu_notif .section {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.page_visu_notif .section h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.page_visu_notif .card {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.page_visu_notif .card a.btn {
+    margin-right: 10px;
+}
+
+.page_visu_notif .table {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.page_visu_notif .table th,
+.page_visu_notif .table td {
+    padding: 8px;
+    text-align: left;
+}
+
+.page_visu_notif .table th {
+    background-color: #f2f2f2;
+}
+
+.page_visu_notif .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.page_visu_notif .table-striped tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.page_visu_notif .table-striped tbody td {
+    vertical-align: middle;
+}
+
+.page_visu_notif .notification-details {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.page_visu_notif .notification-details p {
+    margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.page_visu_notif .notification-details p strong {
+    font-weight: bold;
+    color: #555;
+}
+
+.FF01{
+    font-weight: 600;
+    text-decoration: none;
+    color:#000;
+    font-size: 20px;
+}
+
+.FF00{
+    margin-top:4em;
+}
+

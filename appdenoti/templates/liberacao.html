@@ -1,0 +1,19 @@
+{%extends 'base.html' %}
+{%block titulo%}Liberação{%endblock%}
+{%block conteudo%}
+<div class="form-container">
+    <form name="form" id="form" action="{% url 'liberacao' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" class="btn btn-success" value="Salvar">
+    </form>
+</div>
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{%endblock%}
+

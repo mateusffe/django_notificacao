@@ -1,0 +1,94 @@
+{%extends 'base.html' %}
+{%block titulo%}Validador{%endblock%}
+{%block conteudo %}
+<section class="position-relative py-4 py-xl-5">
+    <div class="container position-relative">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                <div class="card mb-5">
+                    <div class="card-body p-sm-5">
+                        <h2 class="text-center mb-4">Validador</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <input class="form-control" type="text" name="codigo_verificador" placeholder="Código do documento">
+                            </div>
+                            <div class="mb-3">
+                                <button class="btn btn-primary d-block w-100" type="submit" style="background: #0aa303;margin: 1px;">Validar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="height: 450px;">
+    <div class="container py-4 py-xl-5">
+        <div class="row gy-4 row-cols-2 row-cols-md-4">
+            <div class="col">
+                {% if codigo_verificador %}
+                    {% if codigo_valido %}
+                    <div class="text-center d-flex flex-column justify-content-center align-items-center py-3">
+                        <div class="bs-icon-xl bs-icon-circle bs-icon-success d-flex flex-shrink-0 justify-content-center align-items-center d-inline-block mb-2 bs-icon lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="green" class="bi bi-check-circle" viewBox="0 0 16 16">
+                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.97 4.97a.75.75 0 0 1 1.08 1.04l-4.47 5.34a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.11-1.02l2.094 2.493 3.36-4.033z"/>
+                            </svg>
+                        </div>
+                        
+                        <div class="px-3">
+                            <p class="mb-0">Documento é válido</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center d-flex flex-column justify-content-center align-items-center py-3">
+                        <div class="bs-icon-xl bs-icon-circle bs-icon-danger d-flex flex-shrink-0 justify-content-center align-items-center d-inline-block mb-2 bs-icon lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" fill="red" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.354 11.354a.5.5 0 0 1 0 .708l-.708.708a.5.5 0 0 1-.708 0L8 8.707l-2.646 2.647a.5.5 0 0 1-.708 0l-.708-.708a.5.5 0 0 1 0-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708l.708-.708a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708 0l.708.708a.5.5 0 0 1 0 .708L8.707 8l2.647 2.646z"/>
+                            </svg>
+                        </div>
+                        <div class="px-3">
+                            <p class="mb-0">Documento não oficial</p>
+                        </div>
+                    </div>
+                    <p>ENTRE EM CONTATO COM O SETOR DE TRIBUTOS</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col">
+                {% if codigo_verificador %}
+                    {% if codigo_valido %}
+                        <div class="text-center d-flex flex-column justify-content-center align-items-center py-3">
+                                <strong style="font-size: 35px;">Notificado em:</strong>
+                                <p class="mb-0">{{ data_notif|date:"d/m/Y H:i"}}</p>
+                            
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col">
+                {% if codigo_verificador %}
+                    {% if codigo_valido %}
+                        <div class="text-center d-flex flex-column justify-content-center align-items-center py-3">
+                            <strong style="font-size: 35px;">Fiscal</strong>
+                            <p class="mb-0">{{ fiscal }}</p>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col">
+                {% if codigo_verificador %}
+                    {% if codigo_valido %}
+                        <div class="text-center d-flex flex-column justify-content-center align-items-center py-3">
+                            <strong style="font-size: 35px;">Prazo </strong>
+                            <span style="font-size: 24px;">{{ prazo }} dias</span>
+                            <p class="mb-0">{{ data_final|date:"d/m/Y H:i"}}</p>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{%endblock%}

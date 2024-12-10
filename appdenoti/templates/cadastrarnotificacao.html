@@ -1,0 +1,55 @@
+{%extends 'base.html' %}
+{%block titulo%}Notificar{%endblock%}
+{%block conteudo %}
+<div class="form-container">
+    <form name="form" class="form-notificacao" id="form" action="{% if db %}/alterarnotificacao/{{db.codigo_verificador}}/{%else%}/salvarnotificacao{%endif%}" method="POST">
+        {% csrf_token %}
+        <div class="form-container-div">
+            <label for="id_nome">Código Verificador:</label>
+            {{ form.codigo_verificador }}  <!-- Exibe o campo de input do formulário -->
+            {{ form.codigo_verificador.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <div>
+            <label for="id_nome">Nº Notificação:</label>
+            {{ form.notif }}  <!-- Exibe o campo de input do formulário -->
+            {{ form.notif.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <div>
+            <label for="id_nome">Data:</label>
+            {{ form.data }}  <!-- Exibe o campo de input do formulário -->
+            {{ form.data.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <div>
+            <label for="id_nome">Motivo:</label>
+            {{ form.motivo }}  <!-- Exibe o campo de input do formulário -->
+            {{ form.motivo.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <div>
+            <label for="id_nome">Observação:</label>
+            {{ form.observacao }}  <!-- Exibe o campo de input do formulário -->
+            {{ form.observacao.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <div>
+            <label for="id_nome">Regularidade:</label>
+            {{ form.regularidade}}  <!-- Exibe o campo de input do formulário -->
+            {{ form.regularidade.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <div>
+            <label for="id_nome">Prazo:</label>
+            {{ form.prazo}}  <!-- Exibe o campo de input do formulário -->
+            {{ form.prazo.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <div>
+            <label for="id_nome">Fiscal:</label>
+            {{ form.fiscal}}  <!-- Exibe o campo de input do formulário -->
+            {{ form.fiscal.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <div>
+            <label for="id_nome">Entidade:</label>
+            {{ form.entidade }}  <!-- Exibe o campo de input do formulário -->
+            {{ form.entidade.errors }}  <!-- Exibe os erros de validação (se houver) -->
+        </div>
+        <input type="submit" class="btn btn-success" value="Salvar">
+    </form>
+</div>
+{%endblock%}
